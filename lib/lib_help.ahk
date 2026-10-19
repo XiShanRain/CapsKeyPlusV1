@@ -9,8 +9,8 @@ showHelpGui(){
     Gui, HelpGui:+LabelHelpGui
     Gui, HelpGui:+HwndHelpGuiHwnd
     Gui, HelpGui:Font, s9, Microsoft YaHei UI
-    Gui, HelpGui:Add, ListView, vHelpCat gHelpCat Grid r16 w160 h440 -Multi -Hdr NoSortHdr, % lang_help_cat
-    Gui, HelpGui:Add, Edit, vHelpContent ReadOnly Multi WantTab -Wrap r16 w540 h440
+    Gui, HelpGui:Add, ListView, vHelpCat gHelpCat Grid r16 w160 h440 -Multi -Hdr NoSortHdr x10 y10, % lang_help_cat
+    Gui, HelpGui:Add, Edit, vHelpContent ReadOnly Multi WantTab -Wrap x180 y10 w550 h440
     LV_Delete()
     LV_Add("", lang_help_cat_basic)
     LV_Add("", lang_help_cat_tabscript)
@@ -24,6 +24,7 @@ showHelpGui(){
 
 helpGuiShowContent(idx){
     global
+    Gui, HelpGui:Default
     if(idx=1)
         content := lang_help_basic
     else if(idx=2)
@@ -43,13 +44,17 @@ return
 
 HelpGuiSize:
 Gui, HelpGui:Default
-GuiControl, Move, HelpCat, h%A_GuiHeight%
-GuiControl, Move, HelpContent, w%A_GuiWidth% h%A_GuiHeight%
+GuiControlGet, hcp, Pos, HelpContent
+newH := A_GuiHeight - 20
+newW := A_GuiWidth - hcpX - 10
+GuiControl, Move, HelpCat, h%newH%
+GuiControl, Move, HelpContent, w%newW% h%newH%
 return
 
 HelpCat:
-if(A_GuiEvent = "Normal")
+if(A_GuiEvent = "Normal" || A_GuiEvent = "DoubleClick")
 {
+    Gui, HelpGui:Default
     rowNum := LV_GetNext()
     if(rowNum)
         helpGuiShowContent(rowNum)
